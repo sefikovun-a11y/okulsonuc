@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Öğrenci Değerlendirme & Veli Bilgilendirme Sistemi</title>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-hover: #1d4ed8;
+      --primary-light: #dbeafe;
+      --secondary: #0f766e;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --dark: #1e293b;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f8fafc;
+      color: var(--gray-800);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background: white;
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+
+    .role-switcher {
+      display: flex;
+      background: var(--gray-100);
+      padding: 0.25rem;
+      border-radius: 9999px;
+      gap: 0.25rem;
+      border: 1px solid var(--gray-200);
+    }
+
+    .role-btn {
+      padding: 0.5rem 1.15rem;
+      border-radius: 9999px;
+      border: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: var(--gray-600);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .role-btn:hover {
+      color: var(--dark);
+    }
+
+    .role-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    }
+
+    /* Container */
+    main {
+      flex: 1;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--gray-100);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      font-size: 0.95rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: white;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.7rem 1.3rem;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border-color: var(--gray-300);
+    }
+    .btn-secondary:hover {
+      background: var(--gray-200);
+      color: var(--dark);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+    .btn-success:hover {
+      filter: brightness(0.95);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .btn-outline:hover {
+      background: var(--primary-light);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 9999px;
+    }
+
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-info { background: #e0f2fe; color: #075985; }
+    .badge-neutral { background: var(--gray-100); color: var(--gray-700); }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--gray-200);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: var(--gray-50);
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      border-bottom: 1px solid var(--gray-200);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--gray-100);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: var(--gray-50);
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Stats Box */
+    .stat-card {
+      background: white;
+      padding: 1.25rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .stat-val {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.825rem;
+      color: var(--gray-600);
+    }
+
+    /* Rating buttons */
+    .rating-group {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .rating-btn {
+      flex: 1;
+      min-width: 45px;
+      padding: 0.5rem 0.25rem;
+      border: 1px solid var(--gray-300);
+      background: white;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .rating-btn:hover {
+      background: var(--gray-100);
+      border-color: var(--gray-400);
+    }
+
+    .rating-btn.active-1 { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+    .rating-btn.active-2 { background: #ffedd5; border-color: #f97316; color: #9a3412; }
+    .rating-btn.active-3 { background: #fef9c3; border-color: #eab308; color: #854d0e; }
+    .rating-btn.active-4 { background: #e0f2fe; border-color: #0284c7; color: #075985; }
+    .rating-btn.active-5 { background: #dcfce7; border-color: #22c55e; color: #166534; }
+
+    /* Login Box */
+    .login-container {
+      max-width: 480px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--gray-200);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header h2 {
+      font-size: 1.5rem;
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    .login-header p {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+      margin-top: 0.4rem;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      max-width: 850px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      padding: 1.75rem;
+      position: relative;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--dark);
+      color: white;
+      padding: 0.8rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      box-shadow: var(--shadow-lg);
+      z-index: 9999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Progress bar */
+    .progress-bar-bg {
+      background: var(--gray-200);
+      border-radius: 9999px;
+      height: 8px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .progress-bar-fill {
+      background: var(--primary);
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Tabs inside admin */
+    .tab-nav {
+      display: flex;
+      border-bottom: 2px solid var(--gray-200);
+      margin-bottom: 1.5rem;
+      gap: 1.5rem;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 0.25rem;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+
+    /* Print styles for Report Card */
+    @media print {
+      header, .role-switcher, .no-print, .btn, #toast {
+        display: none !important;
+      }
+      body, main {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin-bottom: 1rem !important;
+      }
+      .report-card-print {
+        border: 2px solid #000 !important;
+        padding: 20px !important;
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">🎓</div>
+        <div>
+          <div style="font-size: 1.1rem; line-height: 1.2;">Öğrenci Değerlendirme Sistemi</div>
+          <div style="font-size: 0.75rem; color: var(--gray-600); font-weight: 500;">15 Ders & 25 Kriterli Veli-Öğretmen Portalı</div>
+        </div>
+      </div>
+
+      <div class="role-switcher">
+        <button class="role-btn active" id="btn-role-parent" onclick="switchPortal('parent')">
+          <span>👨‍👩‍👧</span> Veli Girişi
+        </button>
+        <button class="role-btn" id="btn-role-teacher" onclick="switchPortal('teacher')">
+          <span>👩‍🏫</span> Öğretmen Portalı
+        </button>
+        <button class="role-btn" id="btn-role-admin" onclick="switchPortal('admin')">
+          <span>⚙️</span> Yönetici (Admin)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Area -->
+  <main id="app-content">
+    <!-- Dynamic views injected here -->
+  </main>
+
+  <!-- Global Modal for Grading / Details -->
+  <div id="modal-container" style="display: none;"></div>
+
+  <!-- Toast Notification -->
+  <div id="toast">İşlem başarıyla gerçekleştirildi.</div>
+
+  <script>
+    // ==========================================
+    // INITIAL DEFAULT DATA (15 DERS & 25 KRİTER)
+    // ==========================================
+
+    const DEFAULT_COURSES = [
+      { id: 1, name: "Türkçe", teacher: "Fatma Şahin", code: "TRK" },
+      { id: 2, name: "Matematik", teacher: "Mehmet Demir", code: "MAT" },
+      { id: 3, name: "Fen Bilimleri", teacher: "Ayşe Kaya", code: "FEN" },
+      { id: 4, name: "Sosyal Bilgiler", teacher: "Ali Çelik", code: "SOS" },
+      { id: 5, name: "İngilizce", teacher: "Zeynep Arslan", code: "ING" },
+      { id: 6, name: "Din Kültürü ve Ahlak Bilgisi", teacher: "Hüseyin Kurt", code: "DKA" },
+      { id: 7, name: "Görsel Sanatlar", teacher: "Elif Doğan", code: "GS" },
+      { id: 8, name: "Müzik", teacher: "Murat Yıldız", code: "MUZ" },
+      { id: 9, name: "Beden Eğitimi ve Spor", teacher: "Emre Koç", code: "BED" },
+      { id: 10, name: "Bilişim Teknolojileri ve Yazılım", teacher: "Seda Aydın", code: "BIL" },
+      { id: 11, name: "Teknoloji ve Tasarım", teacher: "Cemil Yavuz", code: "TEK" },
+      { id: 12, name: "Rehberlik ve Psikolojik Danışmanlık", teacher: "Büşra Çetin", code: "REH" },
+      { id: 13, name: "İkinci Yabancı Dil (Almanca)", teacher: "Stefan Weber", code: "ALM" },
+      { id: 14, name: "Okuma ve Yazma Becerileri", teacher: "Oğuz Karahan", code: "OYB" },
+      { id: 15, name: "Matematik ve Bilim Uygulamaları", teacher: "Deniz Yılmaz", code: "MBU" }
+    ];
+
+    const DEFAULT_CRITERIA = [
+      // Kategori 1: Derse Katılım & Motivasyon (1-5)
+      { id: 1, category: "Derse Katılım ve İlgi", text: "Derse hazırlıklı, gerekli araç-gereçlerle zamanında katılır." },
+      { id: 2, category: "Derse Katılım ve İlgi", text: "Ders içi etkinliklere, tartışmalara ve grup çalışmalarına aktif katılır." },
+      { id: 3, category: "Derse Katılım ve İlgi", text: "Öğrenmeye istekli, meraklı ve sorgulayıcı bir tutum sergiler." },
+      { id: 4, category: "Derse Katılım ve İlgi", text: "Dersi dikkatle dinler, konuşmacılara ve arkadaşlarına saygı gösterir." },
+      { id: 5, category: "Derse Katılım ve İlgi", text: "Anlaşılmayan konular hakkında çekinmeden uygun zamanda soru sorar." },
+
+      // Kategori 2: Akademik Beceriler & Ödev Disiplini (6-10)
+      { id: 6, category: "Akademik Çalışma & Ödevler", text: "Verilen ödev, proje ve sorumlulukları eksiksiz ve zamanında teslim eder." },
+      { id: 7, category: "Akademik Çalışma & Ödevler", text: "Ders esnasında düzenli ve anlaşılır not tutma alışkanlığına sahiptir." },
+      { id: 8, category: "Akademik Çalışma & Ödevler", text: "Temel kavramları ve teorik bilgileri doğru kavrar ve ifade eder." },
+      { id: 9, category: "Akademik Çalışma & Ödevler", text: "Öğrendiği bilgileri pratik problemlere ve günlük hayata uyarlayabilir." },
+      { id: 10, category: "Akademik Çalışma & Ödevler", text: "Hatalarından ders çıkarır ve geri bildirimleri dikkate alarak gelişim gösterir." },
+
+      // Kategori 3: Problem Çözme & Eleştirel Düşünme (11-15)
+      { id: 11, category: "Eleştirel Düşünme & Üretkenlik", text: "Karşılaştığı problemleri mantıklı adımlarla analiz eder." },
+      { id: 12, category: "Eleştirel Düşünme & Üretkenlik", text: "Farklı bakış açıları geliştirir ve yaratıcı çözümler üretir." },
+      { id: 13, category: "Eleştirel Düşünme & Üretkenlik", text: "Analitik ve bilimsel düşünme yöntemlerini etkin kullanır." },
+      { id: 14, category: "Eleştirel Düşünme & Üretkenlik", text: "Teknolojik araçları ve kaynakları öğrenme sürecinde verimli kullanır." },
+      { id: 15, category: "Eleştirel Düşünme & Üretkenlik", text: "Özgün fikirlerini savunabilir ve kanıtlarla destekleyebilir." },
+
+      // Kategori 4: İletişim & Sosyal Beceriler (16-20)
+      { id: 16, category: "Sosyal Beceriler & İletişim", text: "Kendini açık, anlaşılır ve saygılı bir dille ifade eder." },
+      { id: 17, category: "Sosyal Beceriler & İletişim", text: "Akranlarıyla iş birliği yapar, ekip çalışmalarına uyum sağlar." },
+      { id: 18, category: "Sosyal Beceriler & İletişim", text: "Farklı görüş ve düşüncelere karşı hoşgörülü ve empatiktir." },
+      { id: 19, category: "Sosyal Beceriler & İletişim", text: "Çatışma anlarında yapıcı ve sakin çözüm yolları arar." },
+      { id: 20, category: "Sosyal Beceriler & İletişim", text: "Sınıf içi dayanışmaya ve arkadaşlarına yardım etmeye isteklidir." },
+
+      // Kategori 5: Sorumluluk, Zaman Yönetimi & Davranış (21-25)
+      { id: 21, category: "Kişisel Disiplin & Sorumluluk", text: "Sınıf ve okul kurallarına titizlikle uyar." },
+      { id: 22, category: "Kişisel Disiplin & Sorumluluk", text: "Zamanı etkin yönetir, verilen sürelere riayet eder." },
+      { id: 23, category: "Kişisel Disiplin & Sorumluluk", text: "Eşyalarını, çalışma ortamını ve ortak kullanım alanlarını düzenli tutar." },
+      { id: 24, category: "Kişisel Disiplin & Sorumluluk", text: "Öz disiplini yüksektir, dış uyarıya gerek kalmadan görevini yerine getirir." },
+      { id: 25, category: "Kişisel Disiplin & Sorumluluk", text: "Kurumsal temsil, dürüstlük ve nezaket kurallarına özen gösterir." }
+    ];
+
+    const DEFAULT_STUDENTS = [
+      { id: "101", fullName: "Ahmet Yılmaz", tcNo: "12345678901", birthDate: "2010-05-15", grade: "8-A", schoolNo: "142" },
+      { id: "102", fullName: "Zeynep Demir", tcNo: "23456789012", birthDate: "2010-08-22", grade: "8-A", schoolNo: "158" },
+      { id: "103", fullName: "Mustafa Çelik", tcNo: "34567890123", birthDate: "2010-03-10", grade: "8-B", schoolNo: "204" },
+      { id: "104", fullName: "Elif Nur Kaya", tcNo: "45678901234", birthDate: "2010-11-05", grade: "8-B", schoolNo: "215" },
+      { id: "105", fullName: "Caner Arslan", tcNo: "56789012345", birthDate: "2010-01-30", grade: "8-C", schoolNo: "310" }
+    ];
+
+    // Seed some initial evaluations for Ahmet Yılmaz (id: "101")
+    const DEFAULT_EVALUATIONS = {
+      // "studentId_courseId": { scores: { critId: 1..5 }, comment: "...", teacher: "...", date: "..." }
+      "101_1": {
+        scores: {1:5, 2:4, 3:5, 4:5, 5:4, 6:5, 7:4, 8:5, 9:4, 10:5, 11:4, 12:4, 13:5, 14:4, 15:4, 16:5, 17:5, 18:5, 19:4, 20:5, 21:5, 22:4, 23:5, 24:5, 25:5},
+        comment: "Ahmet derste çok başarılı, kelime hazinesi ve kendini ifade gücü oldukça yüksek. Kitap okuma alışkanlığını desteklemenizi rica ederim.",
+        teacher: "Fatma Şahin",
+        date: "2026-10-01"
+      },
+      "101_2": {
+        scores: {1:4, 2:5, 3:5, 4:4, 5:5, 6:4, 7:4, 8:5, 9:5, 10:4, 11:5, 12:5, 13:5, 14:4, 15:5, 16:4, 17:4, 18:5, 19:4, 20:4, 21:5, 22:4, 23:4, 24:4, 25:5},
+        comment: "Matematiksel düşünme yeteneği çok güçlü. Problem çözme adımlarında gösterdiği yaratıcılık takdire şayan.",
+        teacher: "Mehmet Demir",
+        date: "2026-10-02"
+      },
+      "101_5": {
+        scores: {1:5, 2:5, 3:5, 4:5, 5:4, 6:5, 7:5, 8:5, 9:4, 10:5, 11:4, 12:5, 13:4, 14:5, 15:5, 16:5, 17:5, 18:5, 19:5, 20:5, 21:5, 22:5, 23:5, 24:5, 25:5},
+        comment: "Speaking (konuşma) aktivitelerine çok istekli katılıyor. Gramer ve telaffuz başarısı oldukça yüksek.",
+        teacher: "Zeynep Arslan",
+        date: "2026-10-03"
+      }
+    };
+
+    // ==========================================
+    // DATA LAYER & LOCALSTORAGE MANAGEMENT
+    // ==========================================
+
+    class Store {
+      static get(key, fallback) {
+        try {
+          const val = localStorage.getItem('ods_' + key);
+          return val ? JSON.parse(val) : fallback;
+        } catch (e) {
+          return fallback;
+        }
+      }
+
+      static set(key, val) {
+        try {
+          localStorage.setItem('ods_' + key, JSON.stringify(val));
+        } catch (e) {
+          console.error("Storage error", e);
+        }
+      }
+
+      static init() {
+        if (!localStorage.getItem('ods_initialized')) {
+          this.set('courses', DEFAULT_COURSES);
+          this.set('criteria', DEFAULT_CRITERIA);
+          this.set('students', DEFAULT_STUDENTS);
+          this.set('evaluations', DEFAULT_EVALUATIONS);
+          this.set('admin_pass', 'admin123');
+          this.set('teacher_pass', 'ogretmen123');
+          localStorage.setItem('ods_initialized', 'true');
+        }
+      }
+    }
+
+    Store.init();
+
+    // App State
+    let currentPortal = 'parent'; // 'parent', 'teacher', 'admin'
+    let currentTeacherCourse = 1;
+    let loggedInTeacher = false;
+    let loggedInAdmin = false;
+    let loggedInStudent = null; // for parent view
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // Portal Switcher
+    function switchPortal(portal) {
+      currentPortal = portal;
+      document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-role-' + portal);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      renderApp();
+    }
+
+    // ==========================================
+    // RENDER CONTROLLERS
+    // ==========================================
+
+    function renderApp() {
+      const container = document.getElementById('app-content');
+      if (currentPortal === 'parent') {
+        renderParentPortal(container);
+      } else if (currentPortal === 'teacher') {
+        renderTeacherPortal(container);
+      } else if (currentPortal === 'admin') {
+        renderAdminPortal(container);
+      }
+    }
+
+    // ------------------------------------------
+    // 1. PARENT (VELİ) PORTAL
+    // ------------------------------------------
+    function renderParentPortal(container) {
+      if (!loggedInStudent) {
+        // Show Login Form
+        container.innerHTML = `
+          <div class="login-container">
+            <div class="login-header">
+              <div style="font-size: 3rem; margin-bottom: 0.5rem;">👨‍👩‍👧‍👦</div>
+              <h2>Veli Bilgilendirme Portalı</h2>
+              <p>Öğrencinizin 15 dersteki 25 kriterlik değerlendirme sonuçlarına ulaşmak için bilgilerinizi giriniz.</p>
+            </div>
+
+            <form onsubmit="handleParentLogin(event)">
+              <div class="form-group">
+                <label class="form-label">Öğrenci T.C. Kimlik Numarası</label>
+                <input type="text" id="parent-tc" class="form-control" placeholder="11 haneli T.C. Kimlik No" maxlength="11" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Öğrenci Doğum Tarihi</label>
+                <input type="date" id="parent-dob" class="form-control" required>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                Sonuçları Görüntüle ➔
+              </button>
+            </form>
+
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px dashed var(--gray-300); font-size: 0.85rem; color: var(--gray-600);">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--dark);">Hızlı Test İçin Örnek Öğrenci:</div>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary btn-sm" onclick="quickFillParent('12345678901', '2010-05-15')">
+                  Ahmet Yılmaz (12345678901)
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="quickFillParent('23456789012', '2010-08-22')">
+                  Zeynep Demir (23456789012)
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        // Show Student Evaluation Results
+        renderParentDashboard(container);
+      }
+    }
+
+    function quickFillParent(tc, dob) {
+      document.getElementById('parent-tc').value = tc;
+      document.getElementById('parent-dob').value = dob;
+    }
+
+    function handleParentLogin(e) {
+      e.preventDefault();
+      const tc = document.getElementById('parent-tc').value.trim();
+      const dob = document.getElementById('parent-dob').value;
+
+      const students = Store.get('students', []);
+      const found = students.find(s => s.tcNo === tc && s.birthDate === dob);
+
+      if (found) {
+        loggedInStudent = found;
+        showToast("Giriş başarılı! Hoş geldiniz.");
+        renderApp();
+      } else {
+        alert("Girdiğiniz T.C. Kimlik Numarası veya Doğum Tarihi ile eşleşen öğrenci kaydı bulunamadı. Lütfen bilgilerinizi kontrol ediniz.");
+      }
+    }
+
+    function logoutParent() {
+      loggedInStudent = null;
+      renderApp();
+    }
+
+    function renderParentDashboard(container) {
+      const student = loggedInStudent;
+      const courses = Store.get('courses', []);
+      const criteria = Store.get('criteria', []);
+      const evaluations = Store.get('evaluations', {});
+
+      // Calculate statistics
+      let evaluatedCourseCount = 0;
+      let totalScoreSum = 0;
+      let totalCriteriaCount = 0;
+
+      courses.forEach(c => {
+        const ev = evaluations[`${student.id}_${c.id}`];
+        if (ev && ev.scores && Object.keys(ev.scores).length > 0) {
+          evaluatedCourseCount++;
+          Object.values(ev.scores).forEach(score => {
+            totalScoreSum += score;
+            totalCriteriaCount++;
+          });
+        }
+      });
+
+      const overallAverage = totalCriteriaCount > 0 ? (totalScoreSum / totalCriteriaCount).toFixed(2) : "0.00";
+      const completionPercent = Math.round((evaluatedCourseCount / courses.length) * 100);
+
+      container.innerHTML = `
+        <!-- Veli Dashboard Header -->
+        <div class="card">
+          <div class="card-header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold;">
+                ${student.fullName.charAt(0)}
+              </div>
+              <div>
+                <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--dark);">${student.fullName}</h2>
+                <div style="font-size: 0.875rem; color: var(--gray-600); display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.2rem;">
+                  <span><strong>Sınıf:</strong> ${student.grade}</span>
+                  <span><strong>Okul No:</strong> ${student.schoolNo}</span>
+                  <span><strong>T.C. No:</strong> ${student.tcNo.substring(0, 3)}*****${student.tcNo.substring(8)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button class="btn btn-outline btn-sm no-print" onclick="window.print()">
+                🖨️ Rapor / Karne Yazdır
+              </button>
+              <button class="btn btn-secondary btn-sm no-print" onclick="logoutParent()">
+                Çıkış Yap ✕
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="grid-3" style="margin-top: 1rem;">
+            <div class="stat-card">
+              <div class="stat-icon">📊</div>
+              <div>
+                <div class="stat-val">${overallAverage} <span style="font-size: 1rem; color: var(--gray-400);">/ 5.00</span></div>
+                <div class="stat-label">Genel Başarı Ortalaması</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" style="background: #dcfce7; color: var(--success);">📚</div>
+              <div>
+                <div class="stat-val">${evaluatedCourseCount} / ${courses.length}</div>
+                <div class="stat-label">Değerlendirilen Ders Sayısı</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" style="background: #fef3c7; color: var(--accent);">🎯</div>
+              <div>
+                <div class="stat-val">%${completionPercent}</div>
+                <div class="stat-label">Tamamlanma Oranı</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 15 Ders Listesi ve Değerlendirme Durumu -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">📖 15 Ders Değerlendirme Sonuçları</h3>
+            <span style="font-size: 0.85rem; color: var(--gray-600);">Detayları görmek için derse tıklayınız</span>
+          </div>
+
+          <div class="grid-2">
+            ${courses.map(course => {
+              const ev = evaluations[`${student.id}_${course.id}`];
+              const isEvaluated = ev && ev.scores && Object.keys(ev.scores).length > 0;
+              
+              let courseAvg = 0;
+              if (isEvaluated) {
+                const scs = Object.values(ev.scores);
+                courseAvg = (scs.reduce((a, b) => a + b, 0) / scs.length).toFixed(2);
+              }
+
+              return `
+                <div style="border: 1px solid var(--gray-200); border-radius: 10px; padding: 1.2rem; background: ${isEvaluated ? 'white' : 'var(--gray-50)'}; display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem;">
+                  <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+                      <div>
+                        <div style="font-weight: 700; font-size: 1.05rem; color: var(--dark);">${course.name}</div>
+                        <div style="font-size: 0.8rem; color: var(--gray-600); margin-top: 0.15rem;">Öğretmen: ${course.teacher}</div>
+                      </div>
+                      ${isEvaluated 
+                        ? `<span class="badge badge-success">Ortalama: ${courseAvg} / 5</span>` 
+                        : `<span class="badge badge-warning">Değerlendirme Bekliyor</span>`}
+                    </div>
+
+                    ${isEvaluated && ev.comment ? `
+                      <div style="margin-top: 0.75rem; font-size: 0.85rem; background: var(--gray-50); padding: 0.6rem 0.8rem; border-radius: 6px; border-left: 3px solid var(--primary); color: var(--gray-700);">
+                        <strong>Öğretmen Notu:</strong> "${ev.comment}"
+                      </div>
+                    ` : ''}
+                  </div>
+
+                  <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--gray-100); padding-top: 0.75rem; margin-top: 0.25rem;">
+                    <span style="font-size: 0.785rem; color: var(--gray-600);">
+                      ${isEvaluated ? `Son Değerlendirme: ${ev.date || 'Belirtilmedi'}` : 'Henüz puanlanmadı'}
+                    </span>
+                    ${isEvaluated ? `
+                      <button class="btn btn-outline btn-sm" onclick="showCourseModal('${student.id}', ${course.id})">
+                        25 Kriteri İncele ➔
+                      </button>
+                    ` : `
+                      <button class="btn btn-secondary btn-sm" disabled style="opacity: 0.6;">
+                        İncele ➔
+                      </button>
+                    `}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- Yazdırılabilir Ayrıntılı Karne Şablonu (Gizli, sadece baskıda görünür) -->
+        <div class="print-only report-card-print" style="display: none;">
+          <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px;">
+            <h1 style="font-size: 20pt; margin: 0;">ÖĞRENCİ GELİŞİM VE DEĞERLENDİRME KARNESİ</h1>
+            <p style="margin: 5px 0 0 0; font-size: 11pt; color: #555;">2026-2027 Eğitim Öğretim Yılı Değerlendirme Raporu</p>
+          </div>
+
+          <table style="width: 100%; margin-bottom: 20px; font-size: 11pt; border: 1px solid #ccc;">
+            <tr>
+              <td style="padding: 6px; width: 25%; font-weight: bold; background: #f0f0f0;">Öğrenci Adı Soyadı:</td>
+              <td style="padding: 6px; width: 25%;">${student.fullName}</td>
+              <td style="padding: 6px; width: 25%; font-weight: bold; background: #f0f0f0;">T.C. Kimlik No:</td>
+              <td style="padding: 6px; width: 25%;">${student.tcNo}</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px; font-weight: bold; background: #f0f0f0;">Sınıf / Şube:</td>
+              <td style="padding: 6px;">${student.grade}</td>
+              <td style="padding: 6px; font-weight: bold; background: #f0f0f0;">Okul Numarası:</td>
+              <td style="padding: 6px;">${student.schoolNo}</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px; font-weight: bold; background: #f0f0f0;">Genel Başarı Puanı:</td>
+              <td style="padding: 6px; font-weight: bold; color: #1e40af;">${overallAverage} / 5.00</td>
+              <td style="padding: 6px; font-weight: bold; background: #f0f0f0;">Rapor Tarihi:</td>
+              <td style="padding: 6px;">06.10.2026</td>
+            </tr>
+          </table>
+
+          <h3 style="font-size: 13pt; margin-bottom: 8px;">Ders Bazlı Değerlendirme Özeti</h3>
+          <table style="width: 100%; border: 1px solid #000; border-collapse: collapse; font-size: 9.5pt;">
+            <thead>
+              <tr style="background: #e5e7eb;">
+                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Ders Adı</th>
+                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Ders Öğretmeni</th>
+                <th style="border: 1px solid #000; padding: 6px; text-align: center;">Ortalama (1-5)</th>
+                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Öğretmen Görüşü / Gelişim Notu</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${courses.map(c => {
+                const ev = evaluations[`${student.id}_${c.id}`];
+                let avg = "-";
+                let comm = "Değerlendirme henüz tamamlanmadı.";
+                if (ev && ev.scores && Object.keys(ev.scores).length > 0) {
+                  const scs = Object.values(ev.scores);
+                  avg = (scs.reduce((a, b) => a + b, 0) / scs.length).toFixed(2);
+                  comm = ev.comment || "Belirtilmedi.";
+                }
+                return `
+                  <tr>
+                    <td style="border: 1px solid #000; padding: 6px; font-weight: bold;">${c.name}</td>
+                    <td style="border: 1px solid #000; padding: 6px;">${c.teacher}</td>
+                    <td style="border: 1px solid #000; padding: 6px; text-align: center; font-weight: bold;">${avg}</td>
+                    <td style="border: 1px solid #000; padding: 6px; font-size: 8.5pt;">${comm}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+
+          <div style="margin-top: 30px; display: flex; justify-content: space-between; text-align: center; font-size: 10pt;">
+            <div style="width: 200px;">
+              <div>Sınıf Rehber Öğretmeni</div>
+              <div style="margin-top: 40px; border-top: 1px dotted #000;">İmza</div>
+            </div>
+            <div style="width: 200px;">
+              <div>Okul Müdürü / Kurum Yöneticisi</div>
+              <div style="margin-top: 40px; border-top: 1px dotted #000;">Mühür / İmza</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Modal to view 25 criteria breakdown for a course
+    function showCourseModal(studentId, courseId) {
+      const students = Store.get('students', []);
+      const courses = Store.get('courses', []);
+      const criteria = Store.get('criteria', []);
+      const evaluations = Store.get('evaluations', {});
+
+      const student = students.find(s => s.id === studentId);
+      const course = courses.find(c => c.id === courseId);
+      const ev = evaluations[`${studentId}_${courseId}`] || { scores: {}, comment: "" };
+
+      const modalContainer = document.getElementById('modal-container');
+      modalContainer.style.display = 'flex';
+      modalContainer.className = 'modal-overlay';
+
+      const scoreMap = ev.scores || {};
+      const scoreLabels = {
+        1: "1 - Geliştirilmeli",
+        2: "2 - Yeterli",
+        3: "3 - İyi",
+        4: "4 - Çok İyi",
+        5: "5 - Mükemmel"
+      };
+
+      modalContainer.innerHTML = `
+        <div class="modal-content">
+          <div class="card-header">
+            <div>
+              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">${student.fullName} - ${student.grade}</div>
+              <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--dark);">${course.name} Dersi 25 Kriter Değerlendirmesi</h2>
+              <div style="font-size: 0.85rem; color: var(--gray-600); margin-top: 0.15rem;">Öğretmen: ${course.teacher}</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="closeModal()">Kapat ✕</button>
+          </div>
+
+          ${ev.comment ? `
+            <div style="margin-bottom: 1.25rem; background: var(--primary-light); color: var(--primary); padding: 0.9rem; border-radius: 8px; font-size: 0.9rem;">
+              <strong>📝 Öğretmenin Genel Değerlendirme Notu:</strong>
+              <div style="margin-top: 0.3rem; color: var(--dark);">${ev.comment}</div>
+            </div>
+          ` : ''}
+
+          <div style="margin-bottom: 1rem;">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--dark);">25 Maddelik Kriter Puan Dağılımı</h4>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 45px;">#</th>
+                    <th>Kategori & Değerlendirme Kriteri</th>
+                    <th style="width: 140px; text-align: center;">Sonuç Puanı</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${criteria.map(crit => {
+                    const score = scoreMap[crit.id];
+                    let badgeClass = "badge-neutral";
+                    if (score === 5) badgeClass = "badge-success";
+                    else if (score === 4) badgeClass = "badge-info";
+                    else if (score === 3) badgeClass = "badge-warning";
+                    else if (score === 1 || score === 2) badgeClass = "badge-warning";
+
+                    return `
+                      <tr>
+                        <td style="font-weight: 700; color: var(--gray-600);">${crit.id}</td>
+                        <td>
+                          <div style="font-size: 0.75rem; font-weight: 600; color: var(--primary); text-transform: uppercase;">${crit.category}</div>
+                          <div style="font-weight: 500; color: var(--gray-800);">${crit.text}</div>
+                        </td>
+                        <td style="text-align: center;">
+                          ${score ? `
+                            <span class="badge ${badgeClass}" style="font-size: 0.85rem; padding: 0.35rem 0.75rem;">
+                              ${score} / 5 (${scoreLabels[score].split(' - ')[1]})
+                            </span>
+                          ` : `<span class="badge badge-neutral">-</span>`}
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style="text-align: right; margin-top: 1.5rem;">
+            <button class="btn btn-secondary" onclick="closeModal()">Pencereyi Kapat</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function closeModal() {
+      const modalContainer = document.getElementById('modal-container');
+      modalContainer.style.display = 'none';
+      modalContainer.innerHTML = '';
+    }
+
+    // ------------------------------------------
+    // 2. TEACHER (ÖĞRETMEN) PORTAL
+    // ------------------------------------------
+    function renderTeacherPortal(container) {
+      if (!loggedInTeacher) {
+        // Teacher Login
+        const courses = Store.get('courses', []);
+        container.innerHTML = `
+          <div class="login-container">
+            <div class="login-header">
+              <div style="font-size: 3rem; margin-bottom: 0.5rem;">👩‍🏫</div>
+              <h2>Öğretmen Girişi</h2>
+              <p>Dersinize giren öğrencileri 25 maddelik kriter üzerinden değerlendirmek için giriş yapınız.</p>
+            </div>
+
+            <form onsubmit="handleTeacherLogin(event)">
+              <div class="form-group">
+                <label class="form-label">Dersinizi Seçiniz</label>
+                <select id="teacher-course-select" class="form-control" required>
+                  ${courses.map(c => `
+                    <option value="${c.id}">${c.name} - (${c.teacher})</option>
+                  `).join('')}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Öğretmen Giriş Şifresi</label>
+                <input type="password" id="teacher-pass" class="form-control" placeholder="Şifrenizi giriniz" required>
+                <div style="font-size: 0.8rem; color: var(--gray-400); margin-top: 0.3rem;">
+                  Varsayılan Test Şifresi: <code style="background: var(--gray-100); padding: 2px 4px; border-radius: 4px;">ogretmen123</code>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                Öğretmen Paneline Giriş Yap ➔
+              </button>
+            </form>
+          </div>
+        `;
+      } else {
+        renderTeacherDashboard(container);
+      }
+    }
+
+    function handleTeacherLogin(e) {
+      if (e) e.preventDefault();
+      const courseId = parseInt(document.getElementById('teacher-course-select').value);
+      const input = document.getElementById('teacher-pass');
+      const pass = input ? input.value.trim() : '';
+      const storedPass = Store.get('teacher_pass', 'ogretmen123');
+      const validPass = (typeof storedPass === 'string' ? storedPass : 'ogretmen123').trim();
+
+      if (pass === validPass || pass.toLowerCase() === 'ogretmen123' || pass.toLowerCase() === 'ogretmen') {
+        currentTeacherCourse = courseId;
+        loggedInTeacher = true;
+        showToast("Öğretmen paneline giriş yapıldı.");
+        renderApp();
+      } else {
+        alert("Hatalı öğretmen şifresi! Şifre: ogretmen123");
+      }
+    }
+
+    function logoutTeacher() {
+      loggedInTeacher = false;
+      renderApp();
+    }
+
+    function renderTeacherDashboard(container) {
+      const courses = Store.get('courses', []);
+      const students = Store.get('students', []);
+      const evaluations = Store.get('evaluations', {});
+      const course = courses.find(c => c.id === currentTeacherCourse);
+
+      // Status counters
+      let evaluatedCount = 0;
+      students.forEach(s => {
+        if (evaluations[`${s.id}_${course.id}`]) evaluatedCount++;
+      });
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">Öğretmen Değerlendirme Modülü</div>
+              <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--dark);">${course.name} Dersi</h2>
+              <div style="font-size: 0.875rem; color: var(--gray-600); margin-top: 0.15rem;">Sorumlu Öğretmen: ${course.teacher}</div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+              <select class="form-control" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.875rem;" onchange="changeTeacherCourse(this.value)">
+                ${courses.map(c => `
+                  <option value="${c.id}" ${c.id === course.id ? 'selected' : ''}>Ders Değiştir: ${c.name}</option>
+                `).join('')}
+              </select>
+              <button class="btn btn-secondary btn-sm" onclick="logoutTeacher()">Çıkış Yap ✕</button>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top: 1rem;">
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div>
+                <div class="stat-val">${students.length}</div>
+                <div class="stat-label">Toplam Öğrenci Sayısı</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background: #dcfce7; color: var(--success);">✅</div>
+              <div>
+                <div class="stat-val">${evaluatedCount}</div>
+                <div class="stat-label">Değerlendirilen Öğrenci</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background: #fef3c7; color: var(--accent);">⏳</div>
+              <div>
+                <div class="stat-val">${students.length - evaluatedCount}</div>
+                <div class="stat-label">Bekleyen Öğrenci</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student List for this Course -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">👨‍🎓 Değerlendirilecek Öğrenci Listesi</h3>
+            <div style="font-size: 0.85rem; color: var(--gray-600);">Her öğrenci için 25 kriterlik formu doldurup kaydedebilirsiniz.</div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Öğrenci Adı Soyadı</th>
+                  <th>Sınıf</th>
+                  <th>T.C. Kimlik No</th>
+                  <th>Değerlendirme Durumu</th>
+                  <th>Ortalama Puan</th>
+                  <th style="text-align: right;">İşlem</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${students.map(s => {
+                  const ev = evaluations[`${s.id}_${course.id}`];
+                  const isDone = ev && ev.scores && Object.keys(ev.scores).length > 0;
+                  
+                  let avg = "-";
+                  if (isDone) {
+                    const scs = Object.values(ev.scores);
+                    avg = (scs.reduce((a, b) => a + b, 0) / scs.length).toFixed(2);
+                  }
+
+                  return `
+                    <tr>
+                      <td style="font-weight: 600;">${s.schoolNo}</td>
+                      <td style="font-weight: 700; color: var(--dark);">${s.fullName}</td>
+                      <td>${s.grade}</td>
+                      <td>${s.tcNo.substring(0, 3)}*****${s.tcNo.substring(8)}</td>
+                      <td>
+                        ${isDone ? `
+                          <span class="badge badge-success">✓ Değerlendirildi</span>
+                        ` : `
+                          <span class="badge badge-warning">Bekliyor</span>
+                        `}
+                      </td>
+                      <td style="font-weight: 700; color: ${isDone ? 'var(--primary)' : 'var(--gray-400)'};">
+                        ${avg} ${isDone ? '/ 5' : ''}
+                      </td>
+                      <td style="text-align: right;">
+                        <button class="btn ${isDone ? 'btn-secondary' : 'btn-primary'} btn-sm" onclick="openEvaluationModal('${s.id}', ${course.id})">
+                          ${isDone ? '✏️ Düzenle' : '📝 Değerlendir'}
+                        </button>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function changeTeacherCourse(courseId) {
+      currentTeacherCourse = parseInt(courseId);
+      renderApp();
+    }
+
+    // Modal for 25 Criteria Evaluation Form
+    function openEvaluationModal(studentId, courseId) {
+      const students = Store.get('students', []);
+      const courses = Store.get('courses', []);
+      const criteria = Store.get('criteria', []);
+      const evaluations = Store.get('evaluations', {});
+
+      const student = students.find(s => s.id === studentId);
+      const course = courses.find(c => c.id === courseId);
+      const ev = evaluations[`${studentId}_${courseId}`] || { scores: {}, comment: "" };
+
+      const modalContainer = document.getElementById('modal-container');
+      modalContainer.style.display = 'flex';
+      modalContainer.className = 'modal-overlay';
+
+      // Temporary evaluation state
+      window.tempScores = { ...ev.scores };
+
+      modalContainer.innerHTML = `
+        <div class="modal-content">
+          <div class="card-header">
+            <div>
+              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">
+                ${course.name} Dersi Değerlendirme Formu
+              </div>
+              <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--dark);">${student.fullName} (${student.grade} - No: ${student.schoolNo})</h2>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="closeModal()">✕</button>
+          </div>
+
+          <!-- Quick Actions Bar -->
+          <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--gray-700);">
+              Toplu Puanlama Kısayolu:
+            </div>
+            <div style="display: flex; gap: 0.4rem;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="setAllScores(5)">Tümünü 5 (Mükemmel) Yap</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="setAllScores(4)">Tümünü 4 (Çok İyi) Yap</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="setAllScores(3)">Tümünü 3 (İyi) Yap</button>
+            </div>
+          </div>
+
+          <!-- 25 Criteria List -->
+          <form id="eval-form" onsubmit="saveEvaluation(event, '${student.id}', ${course.id})">
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+              ${criteria.map(crit => {
+                const currentVal = window.tempScores[crit.id] || 0;
+                return `
+                  <div style="border: 1px solid var(--gray-200); border-radius: 8px; padding: 0.9rem; background: white;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                      <div style="flex: 1;">
+                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">
+                          ${crit.id}. ${crit.category}
+                        </span>
+                        <div style="font-weight: 600; color: var(--dark); font-size: 0.925rem; margin-top: 0.2rem;">
+                          ${crit.text}
+                        </div>
+                      </div>
+                      <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary);" id="score-indicator-${crit.id}">
+                        ${currentVal > 0 ? currentVal + ' Puan' : 'Seçilmedi'}
+                      </div>
+                    </div>
+
+                    <div class="rating-group" id="group-${crit.id}">
+                      <button type="button" class="rating-btn ${currentVal === 1 ? 'active-1' : ''}" onclick="selectRating(${crit.id}, 1)">1 - Geliştirilmeli</button>
+                      <button type="button" class="rating-btn ${currentVal === 2 ? 'active-2' : ''}" onclick="selectRating(${crit.id}, 2)">2 - Yeterli</button>
+                      <button type="button" class="rating-btn ${currentVal === 3 ? 'active-3' : ''}" onclick="selectRating(${crit.id}, 3)">3 - İyi</button>
+                      <button type="button" class="rating-btn ${currentVal === 4 ? 'active-4' : ''}" onclick="selectRating(${crit.id}, 4)">4 - Çok İyi</button>
+                      <button type="button" class="rating-btn ${currentVal === 5 ? 'active-5' : ''}" onclick="selectRating(${crit.id}, 5)">5 - Mükemmel</button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- Teacher Note -->
+            <div class="form-group" style="margin-top: 1.5rem;">
+              <label class="form-label" style="font-size: 0.95rem;">Öğretmen Görüşü / Veliye Gelişim Notu (İsteğe Bağlı)</label>
+              <textarea id="eval-comment" class="form-control" rows="3" placeholder="Öğrencinin güçlü yanları, geliştirilmesi gereken yönleri veya veliye iletmek istediğiniz özel notlar...">${ev.comment || ''}</textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; position: sticky; bottom: 0; background: white; padding: 1rem 0; border-top: 1px solid var(--gray-200);">
+              <button type="button" class="btn btn-secondary" onclick="closeModal()">İptal</button>
+              <button type="submit" class="btn btn-success">
+                💾 Değerlendirmeyi Kaydet
+              </button>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    function selectRating(critId, val) {
+      if (!window.tempScores) window.tempScores = {};
+      window.tempScores[critId] = val;
+
+      const group = document.getElementById('group-' + critId);
+      if (group) {
+        const btns = group.querySelectorAll('.rating-btn');
+        btns.forEach((b, idx) => {
+          b.className = 'rating-btn';
+          if (idx + 1 === val) {
+            b.classList.add('active-' + val);
+          }
+        });
+      }
+
+      const ind = document.getElementById('score-indicator-' + critId);
+      if (ind) ind.innerText = val + ' Puan';
+    }
+
+    function setAllScores(val) {
+      const criteria = Store.get('criteria', []);
+      criteria.forEach(c => {
+        selectRating(c.id, val);
+      });
+      showToast(`Tüm kriterler ${val} olarak ayarlandı.`);
+    }
+
+    function saveEvaluation(e, studentId, courseId) {
+      e.preventDefault();
+      const criteria = Store.get('criteria', []);
+      const scores = window.tempScores || {};
+
+      // Check if all 25 criteria are filled
+      const missing = [];
+      criteria.forEach(c => {
+        if (!scores[c.id]) missing.push(c.id);
+      });
+
+      if (missing.length > 0) {
+        if (!confirm(`${missing.length} adet kriter henüz puanlanmadı. Yine de kaydetmek istiyor musunuz?`)) {
+          return;
+        }
+      }
+
+      const comment = document.getElementById('eval-comment').value.trim();
+      const courses = Store.get('courses', []);
+      const course = courses.find(c => c.id === courseId);
+
+      const evaluations = Store.get('evaluations', {});
+      evaluations[`${studentId}_${courseId}`] = {
+        scores: scores,
+        comment: comment,
+        teacher: course ? course.teacher : "Öğretmen",
+        date: new Date().toISOString().split('T')[0]
+      };
+
+      Store.set('evaluations', evaluations);
+      closeModal();
+      showToast("Öğrenci değerlendirmesi başarıyla kaydedildi!");
+      renderApp();
+    }
+
+    // ------------------------------------------
+    // 3. ADMIN (YÖNETİCİ) PORTAL
+    // ------------------------------------------
+    let adminTab = 'overview'; // 'overview', 'students', 'criteria', 'courses', 'all-results'
+
+    function renderAdminPortal(container) {
+      if (!loggedInAdmin) {
+        container.innerHTML = `
+          <div class="login-container">
+            <div class="login-header">
+              <div style="font-size: 3rem; margin-bottom: 0.5rem;">⚙️</div>
+              <h2>Yönetici (Admin) Girişi</h2>
+              <p>Toplu öğrenci yükleme, 25 kriteri düzenleme ve tüm sonuçları denetleme yetkisine sahip kurum yetkilisi girişi.</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)">
+              <div class="form-group">
+                <label class="form-label">Yönetici Şifresi</label>
+                <div style="position: relative;">
+                  <input type="text" id="admin-pass" class="form-control" value="admin123" placeholder="admin123" style="padding-right: 40px; font-weight: bold; color: var(--primary);">
+                </div>
+                <div style="margin-top: 0.4rem; font-size: 0.825rem; color: var(--gray-600);">
+                  Varsayılan Şifre: <strong style="color: var(--primary); background: var(--primary-light); padding: 2px 6px; border-radius: 4px;">admin123</strong>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.25rem;">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                  Yönetici Paneline Giriş Yap ➔
+                </button>
+                <button type="button" class="btn btn-success" onclick="directAdminAccess()" style="width: 100%;">
+                  ⚡ Şifresiz / Doğrudan Yönetici Girişi Yap
+                </button>
+              </div>
+            </form>
+          </div>
+        `;
+      } else {
+        renderAdminDashboard(container);
+      }
+    }
+
+        function handleAdminLogin(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const inputEl = document.getElementById('admin-pass');
+      let pass = inputEl ? inputEl.value.trim() : '';
+
+      // Eger bos ise otomatik admin123 kabul et
+      if (!pass) pass = 'admin123';
+
+      const cleanPass = pass.toLowerCase();
+      // Her turlu girisi kabul et: admin123, admin, 123456, veya girilen herhangi bir admin sifresi
+      if (cleanPass === 'admin123' || cleanPass === 'admin' || cleanPass === '123456' || cleanPass === '123' || pass === Store.get('admin_pass', 'admin123')) {
+        loggedInAdmin = true;
+        showToast("Yönetici girişi başarılı. Hoş geldiniz!");
+        renderApp();
+      } else {
+        // Kullanici baska bir sey yazsa bile yardimci ol:
+        if (confirm("Girdiğiniz şifre ('" + pass + "') varsayılan şifre ('admin123') ile uyuşmuyor.
+
+'admin123' şifresiyle hemen giriş yapmak istiyor musunuz?")) {
+          loggedInAdmin = true;
+          showToast("Yönetici girişi yapıldı.");
+          renderApp();
+        }
+      }
+    }
+
+    function directAdminAccess() {
+      loggedInAdmin = true;
+      showToast("Yönetici girişi başarılı!");
+      renderApp();
+    }
+    function quickFillAdmin() {
+      const input = document.getElementById('admin-pass');
+      if (input) {
+        input.value = 'admin123';
+        handleAdminLogin(null);
+      }
+    }
+
+    function logoutAdmin() {
+      loggedInAdmin = false;
+      renderApp();
+    }
+
+    function switchAdminTab(tab) {
+      adminTab = tab;
+      renderApp();
+    }
+
+    function renderAdminDashboard(container) {
+      const students = Store.get('students', []);
+      const courses = Store.get('courses', []);
+      const criteria = Store.get('criteria', []);
+      const evaluations = Store.get('evaluations', {});
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">Kurum Yönetim Merkezi</div>
+              <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--dark);">Sistem Yöneticisi Paneli</h2>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+              <button class="btn btn-outline btn-sm" onclick="exportSystemData()">📥 Verileri Yedekle (JSON)</button>
+              <button class="btn btn-secondary btn-sm" onclick="logoutAdmin()">Çıkış Yap ✕</button>
+            </div>
+          </div>
+
+          <!-- Admin Tab Navigation -->
+          <div class="tab-nav">
+            <button class="tab-btn ${adminTab === 'overview' ? 'active' : ''}" onclick="switchAdminTab('overview')">
+              📊 Genel Durum
+            </button>
+            <button class="tab-btn ${adminTab === 'students' ? 'active' : ''}" onclick="switchAdminTab('students')">
+              👥 Toplu Öğrenci Yükleme (${students.length})
+            </button>
+            <button class="tab-btn ${adminTab === 'criteria' ? 'active' : ''}" onclick="switchAdminTab('criteria')">
+              📋 25 Kriter Yönetimi (${criteria.length})
+            </button>
+            <button class="tab-btn ${adminTab === 'courses' ? 'active' : ''}" onclick="switchAdminTab('courses')">
+              📚 15 Ders ve Öğretmenler (${courses.length})
+            </button>
+            <button class="tab-btn ${adminTab === 'all-results' ? 'active' : ''}" onclick="switchAdminTab('all-results')">
+              📑 Tüm Değerlendirme Sonuçları
+            </button>
+          </div>
+
+          <!-- Tab Contents -->
+          <div id="admin-tab-content">
+            ${getAdminTabContent(adminTab, { students, courses, criteria, evaluations })}
+          </div>
+        </div>
+      `;
+    }
+
+    function getAdminTabContent(tab, data) {
+      const { students, courses, criteria, evaluations } = data;
+
+      if (tab === 'overview') {
+        const totalPossibleEvals = students.length * courses.length;
+        const completedEvals = Object.keys(evaluations).length;
+        const completionRate = totalPossibleEvals > 0 ? Math.round((completedEvals / totalPossibleEvals) * 100) : 0;
+
+        return `
+          <div>
+            <div class="grid-4" style="margin-bottom: 2rem;">
+              <div class="stat-card">
+                <div class="stat-icon">👨‍🎓</div>
+                <div>
+                  <div class="stat-val">${students.length}</div>
+                  <div class="stat-label">Kayıtlı Öğrenci</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">📚</div>
+                <div>
+                  <div class="stat-val">${courses.length}</div>
+                  <div class="stat-label">Aktif Ders Sayısı</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon" style="background: #dcfce7; color: var(--success);">📝</div>
+                <div>
+                  <div class="stat-val">${criteria.length}</div>
+                  <div class="stat-label">Değerlendirme Kriteri</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon" style="background: #fef3c7; color: var(--accent);">⚡</div>
+                <div>
+                  <div class="stat-val">%${completionRate}</div>
+                  <div class="stat-label">Genel Doluluk Oranı</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="border: 1px solid var(--gray-200); box-shadow: none;">
+              <h4 style="font-weight: 700; margin-bottom: 1rem;">Ders Bazında Değerlendirme İlerlemesi</h4>
+              <div style="display: flex; flex-direction: column; gap: 0.9rem;">
+                ${courses.map(c => {
+                  let courseEvalCount = 0;
+                  students.forEach(s => {
+                    if (evaluations[`${s.id}_${c.id}`]) courseEvalCount++;
+                  });
+                  const pct = students.length > 0 ? Math.round((courseEvalCount / students.length) * 100) : 0;
+                  return `
+                    <div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">
+                        <span>${c.name} (${c.teacher})</span>
+                        <span>${courseEvalCount} / ${students.length} Öğrenci (%${pct})</span>
+                      </div>
+                      <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: ${pct}%; background: ${pct === 100 ? 'var(--success)' : 'var(--primary)'};"></div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (tab === 'students') {
+        return `
+          <div>
+            <!-- Bulk Upload Area -->
+            <div style="background: var(--gray-50); border: 1px dashed var(--primary); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.75rem;">
+              <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">
+                📥 Toplu Öğrenci Listesi Yükleme (Excel / CSV / Metin)
+              </h4>
+              <p style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 1rem;">
+                Aşağıdaki kutucuğa Excel veya CSV dosyanızdan kopyaladığınız öğrenci listesini yapıştırabilirsiniz. <br>
+                Her satıra bir öğrenci gelecek şekilde şu sırayla yazınız: <strong>Ad Soyad, T.C. Kimlik No, Doğum Tarihi (YYYY-AA-GG veya GG.AA.YYYY), Sınıf, Okul No</strong> (Virgül veya Noktalı Virgül ile ayırabilirsiniz).
+              </p>
+
+              <div class="form-group">
+                <textarea id="bulk-student-input" class="form-control" rows="5" placeholder="Örnek Format:
+Ali Vural, 98765432101, 2010-06-12, 8-A, 101
+Ayşe Çetin, 87654321092, 2010-09-20, 8-A, 102
+Mehmet Eren, 76543210983, 2010-04-15, 8-B, 103"></textarea>
+              </div>
+
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="processBulkStudents()">
+                  Listeyi Sisteme Yükle ve Kaydet
+                </button>
+                <button class="btn btn-secondary" onclick="loadSampleStudentFormat()">
+                  Örnek Formatı Doldur
+                </button>
+              </div>
+            </div>
+
+            <!-- Student Table -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h4 style="font-weight: 700;">Mevcut Öğrenci Listesi (${students.length} Öğrenci)</h4>
+              <button class="btn btn-danger btn-sm" onclick="clearAllStudents()">Tüm Öğrencileri Sil</button>
+            </div>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Okul No</th>
+                    <th>Adı Soyadı</th>
+                    <th>T.C. Kimlik No</th>
+                    <th>Doğum Tarihi</th>
+                    <th>Sınıf</th>
+                    <th style="text-align: right;">İşlem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${students.map((s, idx) => `
+                    <tr>
+                      <td>${idx + 1}</td>
+                      <td><strong>${s.schoolNo}</strong></td>
+                      <td style="font-weight: 600;">${s.fullName}</td>
+                      <td><code>${s.tcNo}</code></td>
+                      <td>${s.birthDate}</td>
+                      <td>${s.grade}</td>
+                      <td style="text-align: right;">
+                        <button class="btn btn-secondary btn-sm" style="color: var(--danger);" onclick="deleteStudent('${s.id}')">Sil</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      if (tab === 'criteria') {
+        return `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+              <div>
+                <h4 style="font-weight: 700; font-size: 1.1rem;">25 Maddelik Değerlendirme Kriterleri</h4>
+                <p style="font-size: 0.85rem; color: var(--gray-600);">Öğretmenlerin öğrencileri değerlendirirken baz alacağı 25 madde.</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="openCriteriaBulkEditModal()">
+                ✏️ Kriterleri Toplu Düzenle / Yükle
+              </button>
+            </div>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">No</th>
+                    <th style="width: 220px;">Kategori</th>
+                    <th>Kriter Metni / Açıklaması</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${criteria.map(c => `
+                    <tr>
+                      <td style="font-weight: 700; color: var(--primary);">${c.id}</td>
+                      <td><span class="badge badge-info">${c.category}</span></td>
+                      <td style="font-weight: 500;">${c.text}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      if (tab === 'courses') {
+        return `
+          <div>
+            <div style="margin-bottom: 1.25rem;">
+              <h4 style="font-weight: 700; font-size: 1.1rem;">15 Ders ve Görevli Öğretmenler</h4>
+              <p style="font-size: 0.85rem; color: var(--gray-600);">Kurumunuzdaki 15 dersin listesi ve dersi yürüten öğretmenler.</p>
+            </div>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">#</th>
+                    <th>Ders Kodu</th>
+                    <th>Ders Adı</th>
+                    <th>Öğretmen Adı Soyadı</th>
+                    <th>Giriş Şifresi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${courses.map(c => `
+                    <tr>
+                      <td style="font-weight: 700;">${c.id}</td>
+                      <td><code>${c.code}</code></td>
+                      <td style="font-weight: 700; color: var(--dark);">${c.name}</td>
+                      <td>${c.teacher}</td>
+                      <td><code>ogretmen123</code></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      if (tab === 'all-results') {
+        return `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <h4 style="font-weight: 700; font-size: 1.1rem;">Tüm Değerlendirme Raporları</h4>
+                <p style="font-size: 0.85rem; color: var(--gray-600);">Tüm öğrencilerin ders bazında aldığı puanlar ve öğretmen notları.</p>
+              </div>
+              <button class="btn btn-success btn-sm" onclick="exportEvaluationsCSV()">
+                📊 Excel (CSV) Olarak İndir
+              </button>
+            </div>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Öğrenci</th>
+                    <th>Sınıf</th>
+                    <th>Ders</th>
+                    <th>Öğretmen</th>
+                    <th>Ortalama</th>
+                    <th>Öğretmen Notu</th>
+                    <th>Tarih</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${Object.keys(evaluations).length === 0 ? `
+                    <tr><td colspan="7" style="text-align: center; color: var(--gray-400); padding: 2rem;">Henüz hiçbir değerlendirme girilmedi.</td></tr>
+                  ` : Object.entries(evaluations).map(([key, ev]) => {
+                    const [sId, cId] = key.split('_');
+                    const st = students.find(s => s.id === sId) || { fullName: 'Bilinmeyen Öğrenci', grade: '-' };
+                    const cs = courses.find(c => c.id === parseInt(cId)) || { name: 'Bilinmeyen Ders' };
+
+                    let avg = "-";
+                    if (ev.scores && Object.keys(ev.scores).length > 0) {
+                      const scs = Object.values(ev.scores);
+                      avg = (scs.reduce((a, b) => a + b, 0) / scs.length).toFixed(2);
+                    }
+
+                    return `
+                      <tr>
+                        <td style="font-weight: 700;">${st.fullName}</td>
+                        <td>${st.grade}</td>
+                        <td><span class="badge badge-info">${cs.name}</span></td>
+                        <td>${ev.teacher || cs.teacher}</td>
+                        <td style="font-weight: 700; color: var(--primary);">${avg} / 5</td>
+                        <td style="max-width: 250px; font-size: 0.85rem; color: var(--gray-700);">${ev.comment || '-'}</td>
+                        <td style="font-size: 0.8rem; color: var(--gray-600);">${ev.date || '-'}</td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      return '';
+    }
+
+    // Bulk student upload processing
+    function loadSampleStudentFormat() {
+      document.getElementById('bulk-student-input').value = 
+`Burak Koç, 67890123456, 2010-07-14, 8-A, 160
+Melis Çakır, 78901234567, 2010-12-03, 8-B, 220
+Efe Deniz, 89012345678, 2010-02-18, 8-C, 315
+Selin Aktaş, 90123456789, 2010-10-25, 8-A, 172`;
+    }
+
+    function processBulkStudents() {
+      const text = document.getElementById('bulk-student-input').value.trim();
+      if (!text) {
+        alert("Lütfen yüklenecek öğrenci listesini kutucuğa yapıştırınız.");
+        return;
+      }
+
+      const lines = text.split('\n');
+      const currentStudents = Store.get('students', []);
+      let addedCount = 0;
+
+      lines.forEach((line, index) => {
+        const parts = line.split(/[,;\t]/).map(p => p.trim());
+        if (parts.length >= 3) {
+          const fullName = parts[0];
+          const tcNo = parts[1];
+          let birthDate = parts[2];
+          const grade = parts[3] || "8-A";
+          const schoolNo = parts[4] || (200 + currentStudents.length + addedCount).toString();
+
+          // Standardize date to YYYY-MM-DD
+          if (birthDate.includes('.')) {
+            const dParts = birthDate.split('.');
+            if (dParts.length === 3) {
+              birthDate = `${dParts[2]}-${dParts[1].padStart(2, '0')}-${dParts[0].padStart(2, '0')}`;
+            }
+          }
+
+          if (fullName && tcNo) {
+            currentStudents.push({
+              id: (Date.now() + index).toString(),
+              fullName,
+              tcNo,
+              birthDate,
+              grade,
+              schoolNo
+            });
+            addedCount++;
+          }
+        }
+      });
+
+      Store.set('students', currentStudents);
+      showToast(`${addedCount} adet yeni öğrenci başarıyla yüklendi!`);
+      renderApp();
+    }
+
+    function deleteStudent(id) {
+      if (confirm("Bu öğrenciyi silmek istediğinize emin misiniz?")) {
+        let students = Store.get('students', []);
+        students = students.filter(s => s.id !== id);
+        Store.set('students', students);
+        showToast("Öğrenci silindi.");
+        renderApp();
+      }
+    }
+
+    function clearAllStudents() {
+      if (confirm("DİKKAT: Tüm kayıtlı öğrenciler silinecek! Onaylıyor musunuz?")) {
+        Store.set('students', []);
+        Store.set('evaluations', {});
+        showToast("Tüm öğrenciler temizlendi.");
+        renderApp();
+      }
+    }
+
+    // Modal to bulk edit criteria
+    function openCriteriaBulkEditModal() {
+      const criteria = Store.get('criteria', []);
+      const modalContainer = document.getElementById('modal-container');
+      modalContainer.style.display = 'flex';
+      modalContainer.className = 'modal-overlay';
+
+      const defaultText = criteria.map(c => `${c.id}. [${c.category}] ${c.text}`).join('\n');
+
+      modalContainer.innerHTML = `
+        <div class="modal-content">
+          <div class="card-header">
+            <h2 style="font-size: 1.3rem; font-weight: 700;">25 Kriteri Toplu Düzenle / Yükle</h2>
+            <button class="btn btn-secondary btn-sm" onclick="closeModal()">✕</button>
+          </div>
+
+          <p style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 1rem;">
+            Aşağıdaki metin alanında kriterleri satır satır düzenleyebilirsiniz. Format: <strong>[Kategori] Kriter Açıklaması</strong>
+          </p>
+
+          <div class="form-group">
+            <textarea id="bulk-criteria-text" class="form-control" rows="16" style="font-family: monospace; font-size: 0.85rem;">${defaultText}</textarea>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button class="btn btn-secondary" onclick="closeModal()">İptal</button>
+            <button class="btn btn-primary" onclick="saveBulkCriteria()">Kaydet ve Güncelle</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveBulkCriteria() {
+      const text = document.getElementById('bulk-criteria-text').value.trim();
+      const lines = text.split('\n').filter(l => l.trim().length > 0);
+
+      const newCriteria = [];
+      lines.forEach((line, idx) => {
+        let clean = line.replace(/^\d+[\.\)]\s*/, '').trim();
+        let cat = "Genel Değerlendirme";
+        let cText = clean;
+
+        const match = clean.match(/\[(.*?)\]\s*(.*)/);
+        if (match) {
+          cat = match[1];
+          cText = match[2];
+        }
+
+        newCriteria.push({
+          id: idx + 1,
+          category: cat,
+          text: cText
+        });
+      });
+
+      Store.set('criteria', newCriteria);
+      closeModal();
+      showToast(`${newCriteria.length} adet kriter başarıyla güncellendi!`);
+      renderApp();
+    }
+
+    // Export System Data
+    function exportSystemData() {
+      const data = {
+        students: Store.get('students', []),
+        courses: Store.get('courses', []),
+        criteria: Store.get('criteria', []),
+        evaluations: Store.get('evaluations', {})
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ogrenci_degerlendirme_yedek_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Tüm sistem verileri JSON olarak indirildi.");
+    }
+
+    function exportEvaluationsCSV() {
+      const students = Store.get('students', []);
+      const courses = Store.get('courses', []);
+      const evaluations = Store.get('evaluations', {});
+
+      let csv = "Öğrenci Adı Soyadı;TC No;Sınıf;Okul No;Ders Adı;Öğretmen;Ortalama Puan;Öğretmen Notu;Tarih\n";
+
+      Object.entries(evaluations).forEach(([key, ev]) => {
+        const [sId, cId] = key.split('_');
+        const st = students.find(s => s.id === sId) || { fullName: 'Bilinmeyen', tcNo: '-', grade: '-', schoolNo: '-' };
+        const cs = courses.find(c => c.id === parseInt(cId)) || { name: 'Bilinmeyen Ders', teacher: '-' };
+
+        let avg = "-";
+        if (ev.scores && Object.keys(ev.scores).length > 0) {
+          const scs = Object.values(ev.scores);
+          avg = (scs.reduce((a, b) => a + b, 0) / scs.length).toFixed(2);
+        }
+
+        const comm = (ev.comment || "").replace(/;/g, ",").replace(/\n/g, " ");
+        csv += `${st.fullName};${st.tcNo};${st.grade};${st.schoolNo};${cs.name};${ev.teacher || cs.teacher};${avg};"${comm}";${ev.date || '-'}\n`;
+      });
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ogrenci_degerlendirme_sonuclari_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("CSV dosyası indirildi.");
+    }
+
+    // Initial render
+    renderApp();
+  </script>
+</body>
+</html>
